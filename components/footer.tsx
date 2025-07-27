@@ -18,7 +18,15 @@ export default function Footer() {
           <span className="text-zinc-300 underline underline-offset-2 transition-all duration-200 ease-linear hover:text-yellow-200">
             Kashif Sulehria
           </span>
-          .
+          {" "}  &{" "}
+          <Link
+            href="https://github.com/elonpart2"
+            rel="noopener noreferrer"
+            target="_blank">
+            <span className="text-zinc-300 underline underline-offset-2 transition-all duration-200 ease-linear hover:text-yellow-200">
+              Sanwal Sulehria
+            </span>
+          </Link>
         </Link>
       </motion.div>
     </motion.div>

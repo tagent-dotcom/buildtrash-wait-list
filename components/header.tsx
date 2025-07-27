@@ -21,7 +21,7 @@ export default function Header() {
             variant="secondary"
             className="text-yellow-50 transition-all duration-150 ease-linear md:hover:text-yellow-200">
             
-            <span className="hidden md:inline">BuildTrash.fun - Get hired by the best</span>
+            <span className="inline">BuildTrash.fun</span>
           </Button>
         
       </motion.div>
@@ -32,7 +32,7 @@ export default function Header() {
             variant="secondary"
             className="text-yellow-50 transition-all duration-150 ease-linear md:hover:text-yellow-200">
             
-            <span className="hidden md:inline">Join the waitlist</span>
+            <span className="inline">Join the waitlist</span>
           </Button>
          
       </motion.div>
