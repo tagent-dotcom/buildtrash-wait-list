@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         database_id: `${process.env.NOTION_DB}`,
       },
       properties: {
-        Email: {
+        email: {
           type: "email",
           email: body?.email,
         },
@@ -34,6 +34,21 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false }, { status: 500 });
+    console.error("Notion API Error:", error);
+    
+    // Return more detailed error information
+    if (error instanceof Error) {
+      return NextResponse.json({ 
+        success: false, 
+        error: error.message,
+        details: error.toString()
+      }, { status: 500 });
+    }
+    
+    return NextResponse.json({ 
+      success: false, 
+      error: "Unknown error occurred",
+      details: String(error)
+    }, { status: 500 });
   }
 }

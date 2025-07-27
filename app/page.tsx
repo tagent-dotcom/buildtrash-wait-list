@@ -42,8 +42,27 @@ export default function Home() {
 
     const promise = new Promise(async (resolve, reject) => {
       try {
-        // Submit to waitlist API (handles both database and email)
-        const response = await fetch("/api/waitlist", {
+        // First, attempt to send the email
+        const mailResponse = await fetch("/api/mail", {
+          cache: "no-store",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ firstname: name, email }),
+        });
+
+        if (!mailResponse.ok) {
+          if (mailResponse.status === 429) {
+            reject("Rate limited");
+          } else {
+            reject("Email sending failed");
+          }
+          return; // Exit the promise early if mail sending fails
+        }
+
+        // If email sending is successful, proceed to insert into Notion
+        const notionResponse = await fetch("/api/notion", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -51,18 +70,14 @@ export default function Home() {
           body: JSON.stringify({ name, email }),
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 429) {
+        if (!notionResponse.ok) {
+          if (notionResponse.status === 429) {
             reject("Rate limited");
-          } else if (response.status === 409) {
-            reject("Already registered");
           } else {
-            reject(data.error || "Submission failed");
+            reject("Notion insertion failed");
           }
         } else {
-          resolve({ name, position: data.position });
+          resolve({ name });
         }
       } catch (error) {
         reject(error);
@@ -79,8 +94,6 @@ export default function Home() {
       error: (error) => {
         if (error === "Rate limited") {
           return "You're doing that too much. Please try again later";
-        } else if (error === "Already registered") {
-          return "You're already on the waitlist! 🎉";
         } else if (error === "Email sending failed") {
           return "Failed to send email. Please try again 😢.";
         } else if (error === "Notion insertion failed") {
